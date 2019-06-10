@@ -1,0 +1,74 @@
+version: '2'
+
+services:
+  proxy:
+    image: traefik
+    command: --web --docker --docker.domain=lm.localhost --docker.exposedbydefault=false --logLevel=DEBUG
+    networks:
+      - webgateway
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
+
+  api-gateway:
+    container_name: api-gateway
+    build: ./api-gateway
+    volumes:
+      - ../api-gateway:/var/www/api-gateway
+    labels:
+      - "traefik.enable=true"
+      # - "traefik.frontend.rule=Host:api-gateway.lm.localhost"
+      - "traefik.backend=api-gateway"
+    networks:
+      - webgateway
+      - web
+
+  logger-interface:
+    container_name: logger-interface
+    build: ./logger-interface
+    volumes:
+      - ../logger-interface:/var/www/logger-interface
+    labels:
+      - "traefik.enable=true"
+      # - "traefik.frontend.rule=Host:logger-interface.lm.localhost"
+      - "traefik.backend=logger-interface"
+    networks:
+      - webgateway
+      - web
+    # restart: always
+
+  pubsub-interface:
+    build: ./pubsub-interface
+    volumes:
+      - ../pubsub-interface:/var/www/pubsub-interface
+    labels:
+      - "traefik.enable=true"
+      # - "traefik.frontend.rule=Host:pubsub-interface.lm.localhost"
+      - "traefik.backend=pubsub-interface"
+    networks:
+      - webgateway
+      - web
+    restart: always
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+
+  redis:
+    image: redis:3.2-alpine
+    volumes:
+      - redis_data:/data
+
+
+volumes:
+  redis_data:
+
+networks:
+  webgateway:
+    driver: bridge
+  web:
+    external:
+      name: traefik_webgateway
