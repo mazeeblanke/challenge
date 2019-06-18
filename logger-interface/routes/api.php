@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 Route::prefix('v1')->group(function () {
     Route::match(['get', 'post'], '/logger/createLog', function (Request $request) {
+
         $log = serialize($request->log);
         // mock the logging service
         logger($log);

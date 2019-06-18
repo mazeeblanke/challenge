@@ -21,6 +21,20 @@ The services are:
 - [pubsub-interface](pubsub-interface)
 - [api gateway](api-gateway): This is the single entry point of the api
 
+To install the composer dependencies, cd into the service directory e.g ``` cd api-gateway ```, then Run:
+
+``` docker run --rm -v ${pwd}:/var/www/api-gateway composer/composer install  ``` ---  for powershell
+
+or
+
+``` docker run --rm -v "%cd%":/var/www/api-gateway composer/composer install ```  --- for simple CMD shell session
+
+or
+
+``` docker run --rm -v $(pwd):/var/www/api-gateway composer/composer install ```
+
+This enables us to use composer without installing it globally on our local system
+
 NB: For a more advanced setup I would use kubernetes to achieve a better result.
 
 Build & Run
