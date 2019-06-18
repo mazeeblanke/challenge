@@ -6,6 +6,9 @@ COPY vhost.conf /etc/nginx/conf.d/default.conf
 COPY vhost.conf /etc/nginx/sites-enabled/default
 COPY entrypoint.sh /etc/entrypoint.sh
 
+# # Copy the current directory contents into the container at /app
+COPY ./ /var/www/api-gateway
+
 WORKDIR /var/www/api-gateway
 
 EXPOSE 80

@@ -35,9 +35,12 @@ class LoggerHttpClient
     {
         try {
             $this->client->post('createLog', [
-                'log' => $data
+                'form_params' => [
+                    'log' => $data
+                ]
             ]);
         } catch (BadResponseException $exception) {
+
             throw new HttpException(
                 $exception->getCode(),
                 json_decode($exception->getResponse()->getBody()->getContents())

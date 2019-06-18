@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y libmcrypt-dev nginx
 COPY vhost.conf /etc/nginx/sites-enabled/default
 COPY entrypoint.sh /etc/entrypoint.sh
 
-WORKDIR /var/www/logger-interface
+# # Copy the current directory contents into the container at /app
+# COPY . /app
 
 EXPOSE 80
 
